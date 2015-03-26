@@ -1,0 +1,26 @@
+{
+  "name": "polymer-test",
+  "version": "0.0.0",
+  "authors": [
+    "MihaiMijea <mijeamihai@yahoo.com>"
+  ],
+  "description": "This is a test for polymer-meteor",
+  "keywords": [
+    "polymer",
+    "meteor"
+  ],
+  "license": "MIT",
+  "homepage": "mijeamihai@yahoo.com",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~0.5.5",
+    "paper-button": "Polymer/paper-button#~0.5.5"
+  }
+}

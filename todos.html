@@ -1,0 +1,18 @@
+<head>
+  <title>test</title>
+  <meta name="robots" content="noindex,nofollow">
+    <meta name="viewport" content="width=device-width" />
+    <script src="/bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <link rel="import" href="/bower_components/vulcanized.html">
+</head>
+
+<body>
+  <h1>Welcome to Meteor!</h1>
+
+  {{> hello}}
+</body>
+
+<template name="hello">
+	<paper-button raised>click me</paper-button>
+  <p>You've pressed the button {{counter}} times.</p>
+</template>
