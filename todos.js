@@ -1,4 +1,12 @@
 if (Meteor.isClient) {
+  Template.body.helpers({
+    tasks:[
+      {text: "task1"},
+      {text: "task2"}
+    ]
+  })
+
+
   // counter starts at 0
   Session.setDefault('counter', 0);
 
