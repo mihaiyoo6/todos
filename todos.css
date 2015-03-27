@@ -7,7 +7,7 @@ html, body {
 }
 
 .task_container {
-	padding: 0 10px 10px 10px;
+	padding: 10px 10px 0px 10px;
 }
  core-header-panel {
       width: 100%;
@@ -39,4 +39,27 @@ html, body {
       height: 90%;
       background: #ffffff;
 
+    }
+    core-toolbar {
+      background-color: #0759E4;
+
+      color:white;
+    }
+
+        paper-input {
+          width: 80%;
+          margin-left:10%;
+        }
+
+    
+    paper-checkbox{
+      padding: 15px 20px;
+    }    
+    paper-checkbox.blue::shadow #ink[checked] {
+      color: #BBDEFB;
+    }
+
+    paper-checkbox.blue::shadow #checkbox.checked {
+      background-color: #2196F3;
+      border-color: #2196F3;
     }
