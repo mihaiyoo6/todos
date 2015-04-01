@@ -28,6 +28,9 @@
     "paper-input": "Polymer/paper-input#~0.5.5",
     "paper-checkbox": "Polymer/paper-checkbox#~0.5.5",
     "core-label": "Polymer/core-label#~0.5.5",
-    "paper-icon-button": "Polymer/paper-icon-button#~0.5.5"
+    "paper-icon-button": "Polymer/paper-icon-button#~0.5.5",
+    "paper-fab": "Polymer/paper-fab#~0.5.5",
+    "paper-ripple": "Polymer/paper-ripple#~0.5.5",
+    "core-transition": "Polymer/core-transition#~0.5.5"
   }
 }

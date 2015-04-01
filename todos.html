@@ -1,45 +1,55 @@
 <head>
-  <title>test</title>
-  <meta name="robots" content="noindex,nofollow">
-    <meta name="viewport" content="width=device-width" />
-    <script src="/bower_components/webcomponentsjs/webcomponents.min.js"></script>
-    <link rel="import" href="/bower_components/vulcanized.html">
+	<title>test</title>
+	<meta name="robots" content="noindex,nofollow">
+	<meta name="viewport" content="width=device-width" />
+	<script src="/bower_components/webcomponentsjs/webcomponents.min.js"></script>
+	<link rel="import" href="/bower_components/vulcanized.html">
 </head>
 
 <body>
-<core-header-panel mode="cover">
-    <div class="core-header tall"></div>
-    	<div class="content">
-        {{> toolbar}}
-        <form class="new-task">
-          <paper-input floatingLabel label="New Task"></paper-input>
-        </form>
-        {{#each tasks}}
-        <div class="task_container">
-          {{> task}}          
-        </div>
-        {{/each}}
-      </div>
-</core-header-panel>
+	<core-header-panel mode="cover">
+		<div class="core-header tall"></div>
+		<div class="content" layout center>
+			{{> toolbar}}
+			<div class="task_list">
+			<div class="input-container">
+				<div layout horizontal center>					
+				<paper-input floatingLabel label="New Task"></paper-input>
+					<paper-button raised class="colored" data-action="newTask">Save</paper-button>
+				</div>
+			</div>
+				{{#each tasks}}
+					<div class="task_container">
+						{{> task}}          
+					</div>
+				{{/each}}
+			</div>
+			<paper-fab icon="icons:add" data-action="fab"></paper-fab>
+		</div>
+	</core-header-panel>
 </body>
 
 <template name="task">
-    <paper-shadow>
-    <core-label horizontal layout>
-      <paper-checkbox for class="blue"></paper-checkbox>
-      <div vertical layout>
-          <paper-item>
-          {{text}}
-          </paper-item>
-      </div>
-    </core-label>
-    
-      	</paper-shadow>
+	<paper-shadow>
+		<div layout horizontal flex>
+			<!-- <input type="checkbox" checked="{{checked}}" class="toggle-checked" /> -->
+			<paper-checkbox {{isChecked}} class="blue toggle-checked" ></paper-checkbox>
+			<core-label flex>
+				<div vertical layout flex>
+					<paper-item>
+						{{text}}
+					</paper-item>
+				</div>
+			</core-label>
+			<paper-icon-button icon="delete" data-action="deleteTask"></paper-icon-button>
+		</div>
+	</paper-shadow>
 </template>
 
 <template name="toolbar">
-  <core-toolbar>
-   <div flex>TODOS</div>
-  </core-toolbar>
+	<core-toolbar>
+		<div flex>TODOS</div>
+	</core-toolbar>
 </template>
+
 

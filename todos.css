@@ -33,11 +33,17 @@ html, body {
     .core-header.medium-tall {
       height: 120px;
     }
-
+  
+  paper-button.colored{
+    background-color: #4285F4;
+    color: #fff;
+  }
     .content {
       margin: 2% 10%;
-      height: 90%;
+      height: 96%;
       background: #ffffff;
+      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+      position: relative;
 
     }
     core-toolbar {
@@ -62,4 +68,18 @@ html, body {
     paper-checkbox.blue::shadow #checkbox.checked {
       background-color: #2196F3;
       border-color: #2196F3;
+    }
+    paper-fab{
+      position: absolute;
+      right: 1em;
+      bottom: 1em;
+    }
+
+    .input-container{
+      display:none;
+    }
+
+    .task_list{
+      overflow-y:scroll;
+      height: 90%;
     }

@@ -14,7 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../webcomponentsjs/webcomponents.js"></script>
   
   <link rel="import" href="core-header-panel.html">
-
+  <link rel="import" href="../paper-shadow/paper-shadow.html">
   <style shim-shadowdom>
 
     body {
@@ -51,7 +51,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     .content {
-      height: 2000px;
+      height: 200px;
       background: linear-gradient(rgb(214, 227, 231), lightblue);
     }
 
@@ -91,9 +91,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div class="content"></div>
   </core-header-panel>
   
-  <core-header-panel mode="cover">
+  <core-header-panel mode="cover" shadow>
     <div class="core-header tall">cover</div>
-    <div class="content" style="margin: 60px 60px 60px 0;"></div>
+
+     <div class="content" style="margin: 60px 60px 60px 0;"></div>
+
   </core-header-panel>
   
 </body>
