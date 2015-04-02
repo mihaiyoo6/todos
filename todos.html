@@ -27,6 +27,9 @@
 			<paper-fab icon="icons:add" data-action="fab"></paper-fab>
 		</div>
 	</core-header-panel>
+	<paper-dialog id="loginDialog" transition="core-transition-top" heading="Login/SingUp" backdrop>
+	{{> login}}
+	</paper-dialog>
 </body>
 
 <template name="task">
@@ -37,7 +40,8 @@
 			<core-label flex>
 				<div vertical layout flex>
 					<paper-item>
-						{{text}}
+						<strong>{{username}}</strong>
+						 - {{text}}
 					</paper-item>
 				</div>
 			</core-label>
@@ -49,7 +53,29 @@
 <template name="toolbar">
 	<core-toolbar>
 		<div flex>TODOS</div>
+		{{#if currentUser}}
+		{{currentUser.username}}
+		{{else}}
+		<paper-icon-button icon="account-box"></paper-icon-button>
+		{{/if}}
 	</core-toolbar>
+</template>
+
+<template name="login">
+<form>
+    <paper-input label="Username" focus id="login-email"></paper-input>
+    <paper-input label="Password" id="login-password"></paper-input>
+    <!-- <input type="submit" value="Login"> -->
+    <paper-button type="submit">Login</paper-button>
+</form>
+</template>
+
+<template name="register">
+<form>
+    <input type="email" id="register-email">
+    <input type="password" id="register-password">
+    <input type="submit" value="Register">
+</form>
 </template>
 
 

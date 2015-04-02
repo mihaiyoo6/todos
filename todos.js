@@ -28,11 +28,13 @@ if (Meteor.isClient) {
             //console.log(event.target);
             var inputVal = document.querySelectorAll('paper-input')[0].value;
             if (inputVal.length > 0) {
-                Tasks.insert({
-                    text: inputVal,
-                    createdAt: new Date(),
-                    checked: false
-                });
+
+                Meteor.call("addTask", inputVal);
+                // Tasks.insert({
+                //     text: inputVal,
+                //     createdAt: new Date(),
+                //     checked: false
+                // });
                 document.querySelectorAll('paper-input')[0].value = "";
                 document.querySelectorAll('.input-container')[0].style.display = 'none';
             } else {
@@ -42,6 +44,10 @@ if (Meteor.isClient) {
         "click [data-action=fab]": function() {
             var container = document.querySelectorAll(".input-container")[0];
             container.style.display = "block";
+        },
+        "click paper-icon-button": function(e){
+            
+            document.getElementById('loginDialog').toggle();
         }
     });
 
@@ -72,6 +78,20 @@ if (Meteor.isClient) {
             }
         }
     });
+
+    Template.login.events({
+        'click paper-button': function(event, template) {
+            event.preventDefault();
+            console.log(template);
+            var emailVar = template.find('#login-email').value;
+            var passwordVar = template.find('#login-password').value;
+            Meteor.loginWithPassword(emailVar, passwordVar);
+        }
+    });
+
+    // Accounts.ui.config({
+    //     passwordSignupFields: "USERNAME_ONLY"
+    // });
 }
 
 Meteor.methods({
