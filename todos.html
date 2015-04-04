@@ -27,8 +27,11 @@
 			<paper-fab icon="icons:add" data-action="fab"></paper-fab>
 		</div>
 	</core-header-panel>
-	<paper-dialog id="loginDialog" transition="core-transition-top" heading="Login/SingUp" backdrop>
-	{{> login}}
+	<paper-dialog id="loginDialog" transition="core-transition-top" heading="Login" backdrop>
+	{{> loginDialog}}
+	</paper-dialog>
+	<paper-dialog id="registerDialog" transition="core-transition-top" heading="Register" backdrop>
+	{{> registerDialog}}
 	</paper-dialog>
 </body>
 
@@ -45,37 +48,71 @@
 					</paper-item>
 				</div>
 			</core-label>
+			{{#if isOwner}}
+				<div self-center class="status">{{isPrivateText}}</div>
+				<paper-toggle-button {{isPrivate}} self-center></paper-toggle-button>
+			{{/if}}
 			<paper-icon-button icon="delete" data-action="deleteTask"></paper-icon-button>
 		</div>
 	</paper-shadow>
 </template>
 
 <template name="toolbar">
-	<core-toolbar>
+	<core-toolbar class="">
 		<div flex>TODOS</div>
-		{{#if currentUser}}
-		{{currentUser.username}}
-		{{else}}
-		<paper-icon-button icon="account-box"></paper-icon-button>
-		{{/if}}
+			{{> loginMenu}}
 	</core-toolbar>
+		<div class="bottom fit" horizontal layout>
+    
+	      <paper-tabs selected="0" flex>
+	    
+	        <paper-tab>All Tasks</paper-tab>
+	        <paper-tab>Private</paper-tab>
+	        <paper-tab>Completed</paper-tab>
+	        
+	      </paper-tabs>
+	      
+	    </div>
 </template>
 
-<template name="login">
+<template name="loginDialog">
 <form>
-    <paper-input label="Username" focus id="login-email"></paper-input>
-    <paper-input label="Password" id="login-password"></paper-input>
+    <paper-input label="Username" focus id="login-email" floatingLabel></paper-input>
+    <paper-input label="Password" id="login-password" floatingLabel></paper-input>
     <!-- <input type="submit" value="Login"> -->
     <paper-button type="submit">Login</paper-button>
 </form>
 </template>
 
-<template name="register">
+<template name="registerDialog">
 <form>
-    <input type="email" id="register-email">
-    <input type="password" id="register-password">
-    <input type="submit" value="Register">
+    <paper-input label="Username" focus id="register-email" floatingLabel></paper-input>
+    <paper-input label="Password" id="register-password" floatingLabel></paper-input>
+    <!-- <input type="submit" value="Login"> -->
+    <paper-button type="submit">Register</paper-button>
 </form>
 </template>
 
 
+<template name="loginMenu">
+	<paper-menu-button halign="right">
+		<div layout horizontal>
+	    <paper-icon-button icon="account-box"></paper-icon-button>
+	    {{#if currentUser}}
+			<div self-center>{{currentUser.username}}</div>
+		{{/if}}
+	</div>
+		    <paper-dropdown class="dropdown" halign="right">
+		    
+		      <core-menu class="menu">
+		       {{#if currentUser}}
+		       		<paper-item id="changePwd-item">ChangePassword</paper-item>
+					<paper-item id="logout-item">Logout</paper-item>
+				{{else}}
+		        	<paper-item id="login-item">Login</paper-item>
+		        	<paper-item id="register-item">Register</paper-item>
+	        	{{/if}}
+		      </core-menu>
+		    </paper-dropdown>
+  </paper-menu-button>
+</template>

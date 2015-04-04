@@ -15,8 +15,20 @@ html, body {
 
     }
     
-
-    .core-header {
+ paper-menu-button {
+  height: 40px;
+}   
+paper-tabs{
+  background: #0759E4;
+  color: #fff;
+}
+paper-tabs::shadow #selectionBar {
+  background-color: #d23f31;
+}
+paper-tabs paper-tab::shadow #ink {
+  color: #fff;
+}
+ .core-header {
       height: 60px;
       line-height: 60px;
       font-size: 18px;
@@ -62,7 +74,7 @@ html, body {
       padding: 15px 20px;
     }    
     paper-checkbox.blue::shadow #ink[checked] {
-      color: #BBDEFB;
+      color: #4285F4;
     }
 
     paper-checkbox.blue::shadow #checkbox.checked {
@@ -75,11 +87,22 @@ html, body {
       bottom: 1em;
     }
 
+    paper-toggle-button::shadow [checked] .toggle {
+      background-color: #4285F4;
+    }
+
     .input-container{
       display:none;
     }
 
     .task_list{
       overflow-y:scroll;
-      height: 90%;
+      height: 82%;
+    }
+
+    .dropdown{
+      color:#000;
+    }
+    .status{
+      padding-right:5px;
     }

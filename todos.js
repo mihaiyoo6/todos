@@ -25,16 +25,10 @@ if (Meteor.isClient) {
             return false;
         },
         "click [data-action=newTask]": function(event) {
-            //console.log(event.target);
             var inputVal = document.querySelectorAll('paper-input')[0].value;
             if (inputVal.length > 0) {
 
                 Meteor.call("addTask", inputVal);
-                // Tasks.insert({
-                //     text: inputVal,
-                //     createdAt: new Date(),
-                //     checked: false
-                // });
                 document.querySelectorAll('paper-input')[0].value = "";
                 document.querySelectorAll('.input-container')[0].style.display = 'none';
             } else {
@@ -45,15 +39,26 @@ if (Meteor.isClient) {
             var container = document.querySelectorAll(".input-container")[0];
             container.style.display = "block";
         },
-        "click paper-icon-button": function(e){
-            
+        "login": function() {
             document.getElementById('loginDialog').toggle();
+        },
+        "click paper-tabs": function(event) {
+            console.log(event);
         }
     });
 
     Template.task.helpers({
         isChecked: function() {
             return this.checked ? 'checked' : 'unchecked';
+        },
+          isOwner: function() {
+            return this.owner === Meteor.userId();
+        },
+        isPrivate: function(){
+            return this.private ? 'checked' : 'unchecked';
+        },
+        isPrivateText: function(){
+            return this.private ? 'Private' : 'Public';
         }
     });
 
@@ -61,37 +66,56 @@ if (Meteor.isClient) {
         'click [data-action=deleteTask]': function() {
             Meteor.call('deleteTask', this._id);
         },
-        //  "click .toggle-checked": function() {
-        //     // Set the checked property to the opposite of its current value
-        //     Meteor.call("setChecked", this._id, !this.checked);
-        //     // Tasks.update(this._id, {
-        //     //     $set: {
-        //     //         checked: !this.checked
-        //     //     }
-        //     // });
-        // },
         "change .toggle-checked": function(e) {
             var checked = e.currentTarget.checked;
             console.log(checked);
             if (checked !== this.checked) {
                 Meteor.call("setChecked", this._id, checked);
             }
+        },
+        "change paper-toggle-button": function(){
+            console.log(this);
+            Meteor.call("setPrivate", this._id, !this.private);
         }
     });
 
-    Template.login.events({
+    Template.loginDialog.events({
         'click paper-button': function(event, template) {
             event.preventDefault();
-            console.log(template);
             var emailVar = template.find('#login-email').value;
             var passwordVar = template.find('#login-password').value;
             Meteor.loginWithPassword(emailVar, passwordVar);
         }
     });
 
-    // Accounts.ui.config({
-    //     passwordSignupFields: "USERNAME_ONLY"
-    // });
+    Template.registerDialog.events({
+        'click paper-button': function(event, template) {
+            event.preventDefault();
+            var emailVar = template.find('#register-email').value;
+            var passwordVar = template.find('#register-password').value;
+            Accounts.createUser({
+                email: emailVar,
+                password: passwordVar
+            }, function(err) {
+                if (!err) {
+                    alert(user);
+                }
+            });
+        }
+    })
+
+
+    Template.loginMenu.events({
+        "click #login-item": function() {
+            document.getElementById('loginDialog').toggle();
+        },
+        "click #register-item": function() {
+            document.getElementById('registerDialog').toggle();
+        },
+        "click #logout-item": function() {
+            Meteor.logout();
+        }
+    });
 }
 
 Meteor.methods({
@@ -150,6 +174,14 @@ Meteor.methods({
 
 if (Meteor.isServer) {
     Meteor.publish("tasks", function() {
-        return Tasks.find();
+        return Tasks.find({
+            $or: [{
+                private: {
+                    $ne: true
+                }
+            }, {
+                owner: this.userId
+            }]
+        });
     });
 }
