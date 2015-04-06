@@ -5,17 +5,47 @@ if (Meteor.isClient) {
 
     Template.body.helpers({
         tasks: function() {
-            return Tasks.find({}, {
-                sort: {
-                    createdAt: -1
-                }
-            });
+            if (Session.get('completed-tasks')) {
+                return Tasks.find({
+                    checked: true,
+                    owner: Meteor.userId()
+                }, {
+                    sort: {
+                        createdAt: -1
+                    }
+                });
+            } else if (Session.get('private-tasks')) {
+                return Tasks.find({
+                    private: true
+                }, {
+                    sort: {
+                        createdAt: -1
+                    }
+                });
+            } else if (Session.get('my-tasks')) {
+                return Tasks.find({
+                    checked: false,
+                    owner: Meteor.userId()
+                }, {
+                    sort: {
+                        createdAt: -1
+                    }
+                });
+            } else {
+
+                return Tasks.find({
+                    private: false,
+                }, {
+                    sort: {
+                        createdAt: -1
+                    }
+                });
+            }
         }
     })
 
     Template.body.events({
         "submit .new-task": function(event) {
-            console.log(event);
             var text = event.target.text.value;
             Tasks.insert({
                 text: text,
@@ -35,15 +65,67 @@ if (Meteor.isClient) {
 
             }
         },
+        "click [data-action=showToast]": function() {
+            console.log('showToast');
+            document.querySelectorAll('paper-toast')[0].setAttribute('text', "You have to login.");
+            document.querySelectorAll('paper-toast')[0].show();
+        },
         "click [data-action=fab]": function() {
-            var container = document.querySelectorAll(".input-container")[0];
-            container.style.display = "block";
+            if (!Meteor.userId()) {
+                document.querySelectorAll('paper-toast')[0].setAttribute('text', "You have to login.");
+                document.querySelectorAll('paper-toast')[0].show();
+            } else {
+                var container = document.querySelectorAll(".input-container")[0];
+                container.style.display = "block";
+
+            }
         },
         "login": function() {
+
             document.getElementById('loginDialog').toggle();
         },
-        "click paper-tabs": function(event) {
-            console.log(event);
+        "click [data-action=all-tasks]": function() {
+            if (!Meteor.userId()) {
+                document.querySelectorAll('paper-toast')[0].setAttribute('text', "You have to login.");
+                document.querySelectorAll('paper-toast')[0].show();
+            } else {
+                console.log("all-tasks");
+                Session.set('my-tasks', false);
+                Session.set('completed-tasks', false);
+                Session.set('private-tasks', false);
+            }
+        },
+        "click [data-action=private-tasks]": function() {
+            if (!Meteor.userId()) {
+                document.querySelectorAll('paper-toast')[0].setAttribute('text', "You have to login.");
+                document.querySelectorAll('paper-toast')[0].show();
+            } else {
+                console.log("private-tasks");
+                Session.set('completed-tasks', false);
+                Session.set('my-tasks', false);
+                Session.set('private-tasks', true);
+            }
+        },
+        "click [data-action=completed-tasks]": function() {
+            if (!Meteor.userId()) {
+                document.querySelectorAll('paper-toast')[0].setAttribute('text', "You have to login.");
+                document.querySelectorAll('paper-toast')[0].show();
+            } else {
+                console.log("completed-tasks");
+                Session.set('private-tasks', false);
+                Session.set('my-tasks', false);
+                Session.set('completed-tasks', true);
+            }
+        },
+        "click [data-action=my-tasks]": function() {
+            if (!Meteor.userId()) {
+                document.querySelectorAll('paper-toast')[0].show();
+            } else {
+                console.log("my-tasks");
+                Session.set('private-tasks', false);
+                Session.set('completed-tasks', false);
+                Session.set('my-tasks', true);
+            }
         }
     });
 
@@ -51,14 +133,19 @@ if (Meteor.isClient) {
         isChecked: function() {
             return this.checked ? 'checked' : 'unchecked';
         },
-          isOwner: function() {
+        isOwner: function() {
             return this.owner === Meteor.userId();
         },
-        isPrivate: function(){
+        isPrivate: function() {
             return this.private ? 'checked' : 'unchecked';
         },
-        isPrivateText: function(){
+        isPrivateText: function() {
             return this.private ? 'Private' : 'Public';
+        },
+        islogin: function() {
+            if (!Meteor.userId()) {
+                return 'disabled';
+            }
         }
     });
 
@@ -67,39 +154,58 @@ if (Meteor.isClient) {
             Meteor.call('deleteTask', this._id);
         },
         "change .toggle-checked": function(e) {
-            var checked = e.currentTarget.checked;
-            console.log(checked);
-            if (checked !== this.checked) {
-                Meteor.call("setChecked", this._id, checked);
+            if (!Meteor.userId()) {
+                e.preventDefault();
+                document.querySelectorAll('paper-toast')[0].setAttribute('text', "You have to login.");
+                document.querySelectorAll('paper-toast')[0].show();
+            } else {
+                var checked = e.currentTarget.checked;
+                if (checked !== this.checked) {
+                    Meteor.call("setChecked", this._id, checked);
+                }
             }
         },
-        "change paper-toggle-button": function(){
-            console.log(this);
+        "change paper-toggle-button": function() {
             Meteor.call("setPrivate", this._id, !this.private);
         }
     });
 
     Template.loginDialog.events({
-        'click paper-button': function(event, template) {
+        'click [data-action=login]': function(event, template) {
             event.preventDefault();
             var emailVar = template.find('#login-email').value;
             var passwordVar = template.find('#login-password').value;
-            Meteor.loginWithPassword(emailVar, passwordVar);
+            Meteor.loginWithPassword(emailVar, passwordVar, function(err) {
+                if (err) {
+                    document.querySelectorAll('paper-toast')[0].setAttribute('text', err.reason);
+                    template.find('#login-email').value = '';
+                    template.find('#login-password').value = '';
+                } else {
+                    document.querySelectorAll('paper-toast')[0].setAttribute('text', "You have sucessfully logged in.");
+                }
+                document.querySelectorAll('paper-toast')[0].show();
+
+            });
         }
     });
 
     Template.registerDialog.events({
-        'click paper-button': function(event, template) {
+        'click [data-action=register]': function(event, template) {
             event.preventDefault();
             var emailVar = template.find('#register-email').value;
             var passwordVar = template.find('#register-password').value;
             Accounts.createUser({
-                email: emailVar,
+                username: emailVar,
                 password: passwordVar
-            }, function(err) {
-                if (!err) {
-                    alert(user);
+            },function(err){
+                if (err) {
+                    document.querySelectorAll('paper-toast')[0].setAttribute('text', err.reason);
+                    template.find('#register-email').value = '';
+                    template.find('#register-password').value = '';
+                } else {
+                    document.querySelectorAll('paper-toast')[0].setAttribute('text', "You have sucessfully created new user.");
                 }
+                document.querySelectorAll('paper-toast')[0].show();
             });
         }
     })
@@ -113,7 +219,14 @@ if (Meteor.isClient) {
             document.getElementById('registerDialog').toggle();
         },
         "click #logout-item": function() {
-            Meteor.logout();
+            Meteor.logout(function(err) {
+                if (err) {
+                    document.querySelectorAll('paper-toast')[0].setAttribute('text', err.reason);
+                } else {
+                    document.querySelectorAll('paper-toast')[0].setAttribute('text', "You have sucessfully logged out.");
+                }
+                document.querySelectorAll('paper-toast')[0].show();
+            });
         }
     });
 }
@@ -129,6 +242,8 @@ Meteor.methods({
             text: text,
             createdAt: new Date(),
             owner: Meteor.userId(),
+            private: false,
+            checked: false,
             username: Meteor.user().username
         });
     },
@@ -170,7 +285,6 @@ Meteor.methods({
         });
     }
 });
-
 
 if (Meteor.isServer) {
     Meteor.publish("tasks", function() {

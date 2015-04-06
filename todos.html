@@ -24,22 +24,26 @@
 					</div>
 				{{/each}}
 			</div>
+			<!-- {{> atForm}} -->
 			<paper-fab icon="icons:add" data-action="fab"></paper-fab>
+			<!-- <paper-fab icon="account-box" data-action="showToast"></paper-fab> -->
 		</div>
 	</core-header-panel>
-	<paper-dialog id="loginDialog" transition="core-transition-top" heading="Login" backdrop>
+
+	<paper-action-dialog id="loginDialog" transition="core-transition-top" heading="Login" backdrop>
 	{{> loginDialog}}
-	</paper-dialog>
-	<paper-dialog id="registerDialog" transition="core-transition-top" heading="Register" backdrop>
+	</paper-action-dialog>
+	<paper-action-dialog id="registerDialog" transition="core-transition-top" heading="Register" backdrop>
 	{{> registerDialog}}
-	</paper-dialog>
+	</paper-action-dialog>
+	<paper-toast text="You has to login."></paper-toast>
 </body>
 
 <template name="task">
 	<paper-shadow>
 		<div layout horizontal flex>
 			<!-- <input type="checkbox" checked="{{checked}}" class="toggle-checked" /> -->
-			<paper-checkbox {{isChecked}} class="blue toggle-checked" ></paper-checkbox>
+			<paper-checkbox {{isChecked}} {{islogin}} class="blue toggle-checked" ></paper-checkbox>
 			<core-label flex>
 				<div vertical layout flex>
 					<paper-item>
@@ -51,8 +55,8 @@
 			{{#if isOwner}}
 				<div self-center class="status">{{isPrivateText}}</div>
 				<paper-toggle-button {{isPrivate}} self-center></paper-toggle-button>
+				<paper-icon-button icon="delete" data-action="deleteTask"></paper-icon-button>
 			{{/if}}
-			<paper-icon-button icon="delete" data-action="deleteTask"></paper-icon-button>
 		</div>
 	</paper-shadow>
 </template>
@@ -66,9 +70,10 @@
     
 	      <paper-tabs selected="0" flex>
 	    
-	        <paper-tab>All Tasks</paper-tab>
-	        <paper-tab>Private</paper-tab>
-	        <paper-tab>Completed</paper-tab>
+	        <paper-tab data-action='all-tasks'>All Tasks</paper-tab>
+	        <paper-tab data-action='my-tasks'>My tasks</paper-tab>
+	        <paper-tab data-action='private-tasks'>Private</paper-tab>
+	        <paper-tab data-action="completed-tasks">Completed</paper-tab>
 	        
 	      </paper-tabs>
 	      
@@ -76,21 +81,25 @@
 </template>
 
 <template name="loginDialog">
-<form>
-    <paper-input label="Username" focus id="login-email" floatingLabel></paper-input>
-    <paper-input label="Password" id="login-password" floatingLabel></paper-input>
+
+    <paper-input label="Username" autofocus id="login-email" floatingLabel></paper-input>
+    <paper-input-decorator layout="" vertical="" label=" Password " error="" floatinglabel="">
+    	<input type="password" id="login-password" placeholder=" Password" aria-label=" Password ">
+  	</paper-input-decorator>
     <!-- <input type="submit" value="Login"> -->
-    <paper-button type="submit">Login</paper-button>
-</form>
+    <paper-button  dismissive data-action="login">Login</paper-button>
+
+	
 </template>
 
 <template name="registerDialog">
-<form>
-    <paper-input label="Username" focus id="register-email" floatingLabel></paper-input>
-    <paper-input label="Password" id="register-password" floatingLabel></paper-input>
+    <paper-input label="Username" autofocus id="register-email" floatingLabel></paper-input>
+   <paper-input-decorator layout="" vertical="" label=" Password " error="" floatinglabel="">
+    	<input type="password" id="register-password" placeholder=" Password" aria-label=" Password ">
+  	</paper-input-decorator>
     <!-- <input type="submit" value="Login"> -->
-    <paper-button type="submit">Register</paper-button>
-</form>
+    <paper-button dismissive data-action="register">Register</paper-button>
+
 </template>
 
 
@@ -100,6 +109,8 @@
 	    <paper-icon-button icon="account-box"></paper-icon-button>
 	    {{#if currentUser}}
 			<div self-center>{{currentUser.username}}</div>
+		{{else}}
+		<div self-center>Sign In/Up</div>
 		{{/if}}
 	</div>
 		    <paper-dropdown class="dropdown" halign="right">
